@@ -8,7 +8,7 @@
       :enter-class="$style.opacity"
       :leave-to-class="$style.opacity"
     >
-      <CalendarMordal v-if="isActive" :modal-num="modalNum" @closeModal="closeModal" />
+      <CalendarMordal v-if="isActive" :active-modal-number="activeModalNumber" @closeModal="closeModal" />
     </transition>
   </div>
 </template>
@@ -28,23 +28,33 @@ export default {
   data() {
     return {
       isActive: false,
-      modalNum: '20200101',
+      activeModalNumber: '20200101',
     };
   },
   computed: {
-    ...mapState(['isActiveModal', 'todo']),
+    ...mapState(['isActiveModal']),
   },
   created() {
     this.handleToThisCalendar();
 
-    const getTaskData = (key) => {
+    const storageAvailable = () => {
       try {
-        return localStorage.getItem(key) ? localStorage.getItem(key) : '[]';
-      } catch (error) {
+        const test = '__storage_test__';
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+      } catch (e) {
         // eslint-disable-next-line no-console
-        console.error(error);
+        console.error(e);
         return false;
       }
+    };
+
+    const getTaskData = (key) => {
+      if (storageAvailable()) return localStorage.getItem(key) ? localStorage.getItem(key) : '[]';
+      // eslint-disable-next-line no-console
+      console.error('ローカルストレージが使えないので、Todoは保存できません');
+      return '[]';
     };
 
     const todo = getTaskData('Vue_Calendar');
@@ -53,7 +63,7 @@ export default {
   methods: {
     ...mapActions(['handleToThisCalendar', 'handleFetchTodo']),
     openModal(date) {
-      this.modalNum = date;
+      this.activeModalNumber = date;
       this.isActive = true;
     },
     closeModal() {
@@ -67,6 +77,8 @@ export default {
 .wrapper {
   height: 100%;
   padding: 3rem 2rem 0;
+  margin: 0 auto;
+  max-width: 990px;
 }
 
 .transition {
