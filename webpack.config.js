@@ -16,7 +16,7 @@ module.exports = {
   context: path.resolve(__dirname, 'src'),
   entry,
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'docs'),
     filename: '[name]',
   },
   devServer: {
