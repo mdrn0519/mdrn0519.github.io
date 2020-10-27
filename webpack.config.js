@@ -81,9 +81,7 @@ module.exports = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
-    }),
+    new HtmlWebpackPlugin(),
   ],
   resolve: {
     alias: {
