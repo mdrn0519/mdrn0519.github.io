@@ -2,6 +2,7 @@ const path = require('path');
 const Sass = require('sass');
 const Fiber = require('fibers');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const mode = process.env.NODE_ENV;
 const isProduction = mode === 'production';
@@ -72,9 +73,18 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.html$/,
+        loader: 'html-loader',
+      },
     ],
   },
-  plugins: [new VueLoaderPlugin()],
+  plugins: [
+    new VueLoaderPlugin(),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+    }),
+  ],
   resolve: {
     alias: {
       vue$: 'vue/dist/vue.esm.js',
