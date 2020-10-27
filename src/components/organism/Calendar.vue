@@ -12,8 +12,8 @@
         @click="openModal(item.date)"
       >
         <p :class="[$style.days__number, item.isToday ? $style.today : '']">{{ item.n }}</p>
-        <CalendarHolidaysLabel v-if="holidays.length > 0" :holidays="holidays" :data="item.date" />
-        <CalendarTaskTag v-if="todo.length > 0" :data="item.date" :todo="todo" />
+        <CalendarHolidaysLabel v-if="holidays.length > 0" :holidays="holidays" :date="item.date" />
+        <CalendarTaskTag v-if="todos.length > 0" :date="item.date" :todos="todos" />
       </div>
     </div>
   </div>
@@ -38,7 +38,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['year', 'month', 'day', 'todo']),
+    ...mapState(['year', 'month', 'day', 'todos']),
     arrDays() {
       const { year, month } = this;
       const lastYear = year - 1;
@@ -46,19 +46,15 @@ export default {
       const lastMonth = month - 1 ? month - 1 : 12;
       const nextMonth = month + 1 === 13 ? 1 : month + 1;
 
+      const days31 = [1, 3, 5, 7, 8, 10, 12];
+
+      // 月以下の日付を0パディングする
       const formatDate = (yyyy, mm, dd) => {
         const YYYY = `${yyyy}`;
         const MM = `${`00${mm}`.slice(-2)}`;
         const DD = `${`00${dd}`.slice(-2)}`;
 
         return YYYY + MM + DD;
-      };
-
-      const days31 = [1, 3, 5, 7, 8, 10, 12];
-
-      const startDay = () => {
-        const startOfMonth = new Date(year, month - 1, 1);
-        return startOfMonth.getDay();
       };
 
       const today = () => {
@@ -71,75 +67,62 @@ export default {
       };
 
       const lastMonthEndDays = () => {
-        const dateArr = [];
-        const makeArr = (days, endDaysCount) => {
-          for (let day = days; day > endDaysCount; day -= 1) {
-            const obj = {};
-            const lastMonthYear = month === 1 ? lastYear : year;
-            obj.date = formatDate(lastMonthYear, lastMonth, day);
-            obj.n = day;
-            obj.grayout = true;
-            dateArr.push(obj);
-          }
-          return dateArr.reverse();
+        const days = () => {
+          if (month === 2) return year % 4 === 0 ? 29 : 28; // 2月
+          if (days31.includes(month)) return 31; // 31日ある月
+          return 30; // 30日の月
         };
-        // 2月
-        if (lastMonth === 2) {
-          const days = year % 4 === 0 ? 29 : 28;
-          const endDaysCount = days - startDay();
-          return makeArr(days, endDaysCount);
-        }
-        // 31日ある月
-        if (days31.includes(lastMonth)) {
-          const endDaysCount = 31 - startDay();
-          return makeArr(31, endDaysCount);
-        }
-        // 30日の月
-        const endDaysCount = 30 - startDay();
-        return makeArr(30, endDaysCount);
+
+        const startDay = () => {
+          const startOfMonth = new Date(year, month - 1, 1);
+          return startOfMonth.getDay();
+        };
+
+        const endDaysCount = days() - startDay();
+        return [...Array(days()).keys()]
+          .map((i) => {
+            if (i >= endDaysCount) {
+              const obj = {};
+              const lastMonthYear = month === 1 ? lastYear : year;
+              obj.date = formatDate(lastMonthYear, lastMonth, i);
+              obj.n = i;
+              obj.grayout = true;
+              return obj;
+            }
+            return 0;
+          })
+          .filter((x) => x);
       };
 
-      const thisMonth = () => {
-        const dateArr = [];
-        const makeArr = (days) => {
-          for (let n = 1; n <= days; n += 1) {
-            const obj = {};
-            obj.date = formatDate(year, month, n);
-            obj.n = n;
-            obj.isToday = obj.date === today();
-
-            dateArr.push(obj);
-          }
-          return dateArr;
+      const currentMonth = () => {
+        const days = () => {
+          if (month === 2) return year % 4 === 0 ? 29 : 28; // 2月
+          if (days31.includes(month)) return 31; // 31日ある月
+          return 30; // 30日の月
         };
-        // 2月
-        if (month === 2) {
-          const days = year % 4 === 0 ? 29 : 28;
-          return makeArr(days);
-        }
-        // 31日ある月
-        if (days31.includes(month)) {
-          return makeArr(31);
-        }
-        // 30日の月
-        return makeArr(30);
+
+        return [...Array(days()).keys()].map((i) => {
+          const obj = {};
+          obj.date = formatDate(year, month, i + 1);
+          obj.n = i + 1;
+          obj.isToday = obj.date === today();
+          return obj;
+        });
       };
 
       const nextMonthStartDays = () => {
-        const dateArr = [];
-        const startDaysCount = 42 - [...lastMonthEndDays(), ...thisMonth()].length;
-        for (let n = 1; n <= startDaysCount; n += 1) {
+        const startDaysCount = 42 - [...lastMonthEndDays(), ...currentMonth()].length;
+        return [...Array(startDaysCount).keys()].map((i) => {
           const obj = {};
           const nextMonthYear = month === 12 ? nextYear : year;
-          obj.date = formatDate(nextMonthYear, nextMonth, n);
-          obj.n = n;
+          obj.date = formatDate(nextMonthYear, nextMonth, i + 1);
+          obj.n = i + 1;
           obj.grayout = true;
-          dateArr.push(obj);
-        }
-        return dateArr;
+          return obj;
+        });
       };
 
-      return [...lastMonthEndDays(), ...thisMonth(), ...nextMonthStartDays()];
+      return [...lastMonthEndDays(), ...currentMonth(), ...nextMonthStartDays()];
     },
   },
   mounted() {
@@ -147,15 +130,12 @@ export default {
       .get('https://holidays-jp.github.io/api/v1/date.json')
       .then((holidays) => {
         // 取得した祝日の日付のフォーマット
-        const holidaysData = [];
-        Object.entries(holidays.data).forEach(([day, value]) => {
+        this.holidays = Object.entries(holidays.data).map(([day, value]) => {
           const holiday = day.replace(/-/g, '');
           const obj = {};
           obj[`${holiday}`] = value;
-          holidaysData.push(obj);
+          return obj;
         });
-
-        this.holidays = holidaysData;
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
@@ -219,7 +199,9 @@ export default {
 
 .today {
   &:after {
-    content: '★';
+    content: '< today!';
+    font-size: 10px;
+    margin-left: 10px;
   }
 }
 </style>
