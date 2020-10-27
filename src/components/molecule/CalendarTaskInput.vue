@@ -21,7 +21,7 @@
         <label :for="`input_${index}`" :class="$style.color__label" :style="{ backgroundColor: `${color}` }" />
       </div>
     </div>
-    <button type="submit" :class="$style.btn">保存する</button>
+    <button type="submit" :class="$style.btn" :disabled="!task">保存する</button>
   </form>
 </template>
 
@@ -31,11 +31,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default {
   props: {
-    data: {
+    date: {
       type: String,
       required: true,
     },
-    todo: {
+    todos: {
       type: Array,
       required: true,
     },
@@ -52,12 +52,12 @@ export default {
     addTask() {
       if (this.task) {
         const todo = {};
-        todo.data = this.data;
+        todo.data = this.date;
         todo.contents = this.task;
         todo.color = this.chooseColor;
         todo.key = uuidv4();
 
-        this.todo.push(todo);
+        this.todos.push(todo);
 
         const setItem = (key, value) => {
           try {
@@ -70,9 +70,9 @@ export default {
           }
         };
 
-        setItem('Vue_Calendar', this.todo);
+        setItem('Vue_Calendar', this.todos);
 
-        this.handleAddTask(this.todo);
+        this.handleAddTask(this.todos);
         this.closeModal();
       }
     },
@@ -121,5 +121,9 @@ export default {
   border-radius: 4px;
   margin: 0 auto;
   padding: 5px 10px;
+
+  &:disabled {
+    text-decoration: line-through;
+  }
 }
 </style>

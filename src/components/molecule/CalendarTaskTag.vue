@@ -10,9 +10,9 @@
       <p :class="$style.tag__text">{{ task.contents }}</p>
       <button :class="$style.delete" @click.stop="deleteTask(task.key)">close</button>
     </div>
-    <p v-if="isHavingTask.length - 2 > 0 && !isShow" :class="$style.tag__info" @click.stop="showingAllTask">
-      {{ `他 ${isHavingTask.length - 2} 件` }}
-    </p>
+    <div v-if="isHavingTask.length - 2 > 0 && !isShow" :class="$style.info" @click.stop="showingAllTask">
+      <span :class="$style.info__text">{{ `他 ${isHavingTask.length - 2} 件` }}</span>
+    </div>
   </div>
 </template>
 
@@ -21,11 +21,11 @@ import { mapActions } from 'vuex';
 
 export default {
   props: {
-    data: {
+    date: {
       type: String,
       required: true,
     },
-    todo: {
+    todos: {
       type: Array,
       required: true,
     },
@@ -37,13 +37,13 @@ export default {
   },
   computed: {
     isHavingTask() {
-      return this.todo.filter((task) => task.data === this.data);
+      return this.todos.filter((task) => task.data === this.date);
     },
   },
   methods: {
     ...mapActions(['handleAddTask']),
     deleteTask(keys) {
-      const filteredTodo = this.todo.filter((task) => task.key !== keys);
+      const filteredTodo = this.todos.filter((task) => task.key !== keys);
 
       const setItem = (key, value) => {
         try {
@@ -86,11 +86,15 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
 
-  &__info {
+.info {
+  margin-top: 5px;
+  text-align: right;
+
+  &__text {
+    cursor: pointer;
     font-size: 10px;
-    margin-top: 5px;
-    text-align: right;
   }
 }
 

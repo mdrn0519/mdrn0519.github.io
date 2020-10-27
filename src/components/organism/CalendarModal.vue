@@ -2,8 +2,8 @@
   <div :class="$style.modal">
     <div :class="$style.modal__background" @click="closeModal" />
     <div :class="$style.modal__main">
-      <h3 :class="$style.modal__heading">{{ modalNum }}</h3>
-      <CalendarTaskInput :data="modalNum" :todo="todo" @closeModal="closeModal" />
+      <h3 :class="$style.modal__heading">{{ activeModalNumber }}</h3>
+      <CalendarTaskInput :date="activeModalNumber" :todos="todos" @closeModal="closeModal" />
     </div>
   </div>
 </template>
@@ -17,13 +17,13 @@ export default {
     CalendarTaskInput,
   },
   props: {
-    modalNum: {
+    activeModalNumber: {
       type: String,
       required: true,
     },
   },
   computed: {
-    ...mapState(['todo']),
+    ...mapState(['todos']),
   },
   methods: {
     closeModal() {

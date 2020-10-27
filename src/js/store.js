@@ -5,14 +5,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    // カレンダー周り
     year: 2020,
     month: 1,
     date: 1,
     day: 0,
 
     isActiveModal: 0,
-    todo: [],
+    todos: [],
   },
   mutations: {
     backwardCalendar() {
@@ -36,14 +35,11 @@ export default new Vuex.Store({
       this.state.date = date.getDate();
       this.state.day = date.getDay();
     },
-    ctrlModal(state, date) {
-      this.state.isActiveModal = date;
-    },
     addTask(state, task) {
-      this.state.todo = task;
+      this.state.todos = task;
     },
     fetchTodo(state, task) {
-      this.state.todo = task;
+      this.state.todos = task;
     },
   },
   actions: {
@@ -55,9 +51,6 @@ export default new Vuex.Store({
     },
     handleToThisCalendar({ commit }) {
       commit('toThisCalendar');
-    },
-    handleCtrlModal({ commit }, payload) {
-      commit('ctrlModal', payload);
     },
     handleAddTask({ commit }, payload) {
       commit('addTask', payload);

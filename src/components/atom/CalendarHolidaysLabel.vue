@@ -9,7 +9,7 @@ export default {
       type: Array,
       required: true,
     },
-    data: {
+    date: {
       type: String,
       required: true,
     },
@@ -20,9 +20,9 @@ export default {
     };
   },
   created() {
-    const { holidays, data } = this;
+    const { holidays, date } = this;
     holidays.forEach((holiday) => {
-      if (Object.keys(holiday)[0] === data) {
+      if (Object.keys(holiday)[0] === date) {
         // eslint-disable-next-line prefer-destructuring
         this.holidayValue = Object.values(holiday)[0];
       }
