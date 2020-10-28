@@ -1,5 +1,5 @@
 <template>
-  <button :class="$style.today" @click="handleToThisCalendar">calendar_today</button>
+  <button :class="$style.today" @click="handleToCurrentCalendar">calendar_today</button>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import { mapActions } from 'vuex';
 
 export default {
   methods: {
-    ...mapActions(['handleToThisCalendar']),
+    ...mapActions(['handleToCurrentCalendar']),
   },
 };
 </script>

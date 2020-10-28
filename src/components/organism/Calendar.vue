@@ -38,7 +38,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['year', 'month', 'day', 'todos']),
+    ...mapState(['year', 'month', 'todos']),
     arrDays() {
       const { year, month } = this;
       const lastYear = year - 1;

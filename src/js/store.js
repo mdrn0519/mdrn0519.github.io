@@ -7,33 +7,29 @@ export default new Vuex.Store({
   state: {
     year: 2020,
     month: 1,
-    date: 1,
-    day: 0,
 
     isActiveModal: 0,
     todos: [],
   },
   mutations: {
-    backwardCalendar() {
+    toPrevCalendar() {
       this.state.month -= 1;
       if (this.state.month < 1) {
         this.state.month = 12;
         this.state.year -= 1;
       }
     },
-    advanceCalendar() {
+    toNextCalendar() {
       this.state.month += 1;
       if (this.state.month > 12) {
         this.state.month = 1;
         this.state.year += 1;
       }
     },
-    toThisCalendar() {
+    toCurrentCalendar() {
       const date = new Date();
       this.state.year = date.getFullYear();
       this.state.month = date.getMonth() + 1;
-      this.state.date = date.getDate();
-      this.state.day = date.getDay();
     },
     addTask(state, task) {
       this.state.todos = task;
@@ -43,14 +39,14 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    handleBackwardCalendar({ commit }) {
-      commit('backwardCalendar');
+    handleToPrevCalendar({ commit }) {
+      commit('toPrevCalendar');
     },
-    handleAdvanceCalendar({ commit }) {
-      commit('advanceCalendar');
+    handleToNextCalendar({ commit }) {
+      commit('toNextCalendar');
     },
-    handleToThisCalendar({ commit }) {
-      commit('toThisCalendar');
+    handleToCurrentCalendar({ commit }) {
+      commit('toCurrentCalendar');
     },
     handleAddTask({ commit }, payload) {
       commit('addTask', payload);

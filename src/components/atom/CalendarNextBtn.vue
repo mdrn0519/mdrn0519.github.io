@@ -1,5 +1,5 @@
 <template>
-  <button :class="$style.next" @click="handleAdvanceCalendar">chevron_right</button>
+  <button :class="$style.next" @click="handleToNextCalendar">chevron_right</button>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import { mapActions } from 'vuex';
 
 export default {
   methods: {
-    ...mapActions(['handleAdvanceCalendar']),
+    ...mapActions(['handleToNextCalendar']),
   },
 };
 </script>

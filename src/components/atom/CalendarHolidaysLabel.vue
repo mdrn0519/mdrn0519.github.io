@@ -23,8 +23,8 @@ export default {
     const { holidays, date } = this;
     holidays.forEach((holiday) => {
       if (Object.keys(holiday)[0] === date) {
-        // eslint-disable-next-line prefer-destructuring
-        this.holidayValue = Object.values(holiday)[0];
+        const holidayValues = Object.values(holiday)[0];
+        this.holidayValue = holidayValues;
       }
     });
   },

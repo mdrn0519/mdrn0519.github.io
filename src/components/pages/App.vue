@@ -35,7 +35,7 @@ export default {
     ...mapState(['isActiveModal']),
   },
   created() {
-    this.handleToThisCalendar();
+    this.handleToCurrentCalendar();
 
     const storageAvailable = () => {
       try {
@@ -61,7 +61,7 @@ export default {
     this.handleFetchTodo(JSON.parse(todo));
   },
   methods: {
-    ...mapActions(['handleToThisCalendar', 'handleFetchTodo']),
+    ...mapActions(['handleToCurrentCalendar', 'handleFetchTodo']),
     openModal(date) {
       this.activeModalNumber = date;
       this.isActive = true;
@@ -76,9 +76,9 @@ export default {
 <style lang="scss" module>
 .wrapper {
   height: 100%;
-  padding: 3rem 2rem 0;
   margin: 0 auto;
   max-width: 990px;
+  padding: 30px 20px 0;
 }
 
 .transition {

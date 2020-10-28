@@ -1,5 +1,5 @@
 <template>
-  <button :class="$style.prev" @click="handleBackwardCalendar">chevron_left</button>
+  <button :class="$style.prev" @click="handleToPrevCalendar">chevron_left</button>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import { mapActions } from 'vuex';
 
 export default {
   methods: {
-    ...mapActions(['handleBackwardCalendar']),
+    ...mapActions(['handleToPrevCalendar']),
   },
 };
 </script>
